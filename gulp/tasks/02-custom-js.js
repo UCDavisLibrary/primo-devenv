@@ -48,7 +48,8 @@ function getDefaultBabelPlugins() {
 
 const getBabelConfig = () => {
     return ({
-        presets: ["es2015"],
+        presets: ["babel-preset-env"],
+        global: true,
         plugins: getDefaultBabelPlugins().concat(config.getBrowserify() ? getBrowserifyBabelPlugins() : []),
         sourceMaps: config.getBrowserify(),
     });
