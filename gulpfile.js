@@ -1,4 +1,3 @@
-
 const gulp = require('gulp');
 const minimist = require('minimist');
 const requireDir = require('require-dir');

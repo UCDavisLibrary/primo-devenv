@@ -16,7 +16,6 @@ let buildParams = config.buildParams;
 
 
 
-
 gulp.task('watch-js', gulp.series('select-view', (cb) => {
     gulp.watch([`${buildParams.viewJsDir()}/**/*.js`,'!'+buildParams.customPath()], {interval: 1000, usePolling: true}, gulp.series('custom-js'));
     cb();
@@ -34,7 +33,9 @@ gulp.task('custom-js', gulp.series('select-view', 'custom-html-templates',(cb) =
 
 function getBrowserifyBabelPlugins() {
     return [
-        "transform-html-import-to-string", ["angularjs-annotate", { "explicitOnly" : true}]
+        "transform-html-import-to-string", 
+        ["angularjs-annotate", { "explicitOnly" : true}],
+        "syntax-dynamic-import"
     ];
 }
 
@@ -48,8 +49,9 @@ function getDefaultBabelPlugins() {
 
 const getBabelConfig = () => {
     return ({
-        presets: ["babel-preset-env"],
+        presets: [["babel-preset-env", { "targets": "defaults" }]],
         global: true,
+        ignore: /\/node_modules\/(?!lit|@lit|@ucd-lib)/,
         plugins: getDefaultBabelPlugins().concat(config.getBrowserify() ? getBrowserifyBabelPlugins() : []),
         sourceMaps: config.getBrowserify(),
     });
@@ -78,7 +80,7 @@ function buildByConcatination() {
 function buildByBrowserify() {
     return browserify({
         debug: true,
-        entries: buildParams.mainJsPath(),
+        entries: ["gulp/web-components.js", buildParams.mainJsPath()],
         paths:[
             buildParams.viewJsDir()+'/node_modules'
         ]
