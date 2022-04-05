@@ -11,7 +11,8 @@ const source = require('vinyl-source-stream');
 const uglify = require('gulp-uglify');
 const buffer = require('vinyl-buffer');
 const sourcemaps = require('gulp-sourcemaps');
-const webpack = require('webpack-stream');
+const webpack_stream = require('webpack-stream')
+const webpack = require('webpack');
 
 
 let buildParams = config.buildParams;
@@ -61,12 +62,13 @@ const getBabelConfig = () => {
 
 function buildByCorkAppBuild() {
     if ( process.env.NODE_ENV === 'production' ) {
-        return gulp.src([buildParams.customModulePath(),buildParams.mainPath(),buildParams.customNpmJsPath(),buildParams.customNpmDistPath(),'!'+buildParams.customPath(),'!'+buildParams.customNpmJsModulePath(),'!'+buildParams.customNpmJsCustomPath()],{allowEmpty:true})
-            .pipe(webpack(require('../../webpack-watch.config')))
+            return webpack_stream('../../webpack-watch.config', webpack)
+            .pipe(process.env.NODE_ENV === 'production' ? uglify() : gutil.noop())
+            .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest(buildParams.viewJsDir()));
+            
     } else {
-        return gulp.src([buildParams.customModulePath(),buildParams.mainPath(),buildParams.customNpmJsPath(),buildParams.customNpmDistPath(),'!'+buildParams.customPath(),'!'+buildParams.customNpmJsModulePath(),'!'+buildParams.customNpmJsCustomPath()],{allowEmpty:true})
-            .pipe(webpack(require('../../webpack-run.config.js')))
+        return webpack_stream('../../webpack-run.config.js', webpack)
             .pipe(gulp.dest(buildParams.viewJsDir()));
     }
 }
