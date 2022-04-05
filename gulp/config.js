@@ -6,6 +6,7 @@ let customCssFile =  'custom1.css';
 let mainFile = 'main.js';
 
 let browserify;
+let corkappbuild;
 let view;
 let ve;
 let useScss;
@@ -62,6 +63,14 @@ function getBrowserify() {
 
 function setBrowserify(_browserify) {
     browserify = _browserify;
+}
+
+function getCorkAppBuild() {
+    return corkappbuild;
+}
+
+function setCorkAppBuild(_corkappbuild) {
+    corkappbuild = _corkappbuild;
 }
 
 function setReinstallNodeModules(_reinstallNodeModules) {
@@ -207,6 +216,8 @@ module.exports = {
     view: getView,
     getBrowserify: getBrowserify,
     setBrowserify: setBrowserify,
+    getCorkAppBuild: getCorkAppBuild,
+    setCorkAppBuild: setCorkAppBuild,
     getVe: getVe,
     setVe: setVe,
     getSaml: getSaml,

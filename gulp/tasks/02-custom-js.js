@@ -11,6 +11,8 @@ const source = require('vinyl-source-stream');
 const uglify = require('gulp-uglify');
 const buffer = require('vinyl-buffer');
 const sourcemaps = require('gulp-sourcemaps');
+const webpack = require('webpack-stream');
+
 
 let buildParams = config.buildParams;
 
@@ -25,6 +27,9 @@ gulp.task('watch-js', gulp.series('select-view', (cb) => {
 gulp.task('custom-js', gulp.series('select-view', 'custom-html-templates',(cb) => {
     if (config.getBrowserify()) {
         buildByBrowserify().on('end', cb);
+    }
+    else if(config.getCorkAppBuild()){
+        buildByCorkAppBuild().on('end', cb)
     }
     else {
         buildByConcatination().on('end', cb);
@@ -52,6 +57,18 @@ const getBabelConfig = () => {
         plugins: getDefaultBabelPlugins().concat(config.getBrowserify() ? getBrowserifyBabelPlugins() : []),
         sourceMaps: config.getBrowserify(),
     });
+}
+
+function buildByCorkAppBuild() {
+    if ( process.env.NODE_ENV === 'production' ) {
+        return gulp.src([buildParams.customModulePath(),buildParams.mainPath(),buildParams.customNpmJsPath(),buildParams.customNpmDistPath(),'!'+buildParams.customPath(),'!'+buildParams.customNpmJsModulePath(),'!'+buildParams.customNpmJsCustomPath()],{allowEmpty:true})
+            .pipe(webpack(require('../../webpack-watch.config')))
+            .pipe(gulp.dest(buildParams.viewJsDir()));
+    } else {
+        return gulp.src([buildParams.customModulePath(),buildParams.mainPath(),buildParams.customNpmJsPath(),buildParams.customNpmDistPath(),'!'+buildParams.customPath(),'!'+buildParams.customNpmJsModulePath(),'!'+buildParams.customNpmJsCustomPath()],{allowEmpty:true})
+            .pipe(webpack(require('../../webpack-run.config.js')))
+            .pipe(gulp.dest(buildParams.viewJsDir()));
+    }
 }
 
 function buildByConcatination() {

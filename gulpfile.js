@@ -12,6 +12,7 @@ if (options.reinstallNodeModules) config.setReinstallNodeModules(options.reinsta
 if (options.proxy) config.setProxy(options.proxy);
 if (options.useScss) config.setUseScss(options.useScss);
 config.setBrowserify(options.browserify);
+config.setCorkAppBuild(options.corkappbuild);
 config.setSaml(options.saml);
 config.setCas(options.cas);
 
