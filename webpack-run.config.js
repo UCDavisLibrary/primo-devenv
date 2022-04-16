@@ -16,5 +16,4 @@ let config = require('@ucd-lib/cork-app-build').dist({
     // will take an array of relative paths as well
     clientModules : buildParams.customNpmModuleRootDir()
   });
-  
-  module.exports = config;
+  module.exports = config[0];
