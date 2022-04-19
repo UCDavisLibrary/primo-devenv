@@ -63,14 +63,10 @@ const getBabelConfig = () => {
 function buildByCorkAppBuild() {
     if ( process.env.NODE_ENV === 'production' ) {
             return webpack_stream('../../webpack-run.config', webpack)
-            .pipe(process.env.NODE_ENV === 'production' ? uglify() : gutil.noop())
-            .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest(buildParams.viewJsDir()));
             
     } else {
         return webpack_stream('../../webpack-watch.config', webpack)
-            .pipe(process.env.NODE_ENV === 'production' ? uglify() : gutil.noop())
-            .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest(buildParams.viewJsDir()));
     }
 }
